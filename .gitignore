@@ -1,0 +1,34 @@
+# данные и результаты — не хранятся в репозитории
+work/
+results/
+data/
+*.csv
+*.parquet
+*.npy
+*.npz
+*.pkl
+*.pickle
+*.jsonl
+*.json
+*.xlsx
+*.jpg
+*.jpeg
+*.png
+*.mp4
+*.ts
+*.webm
+*.log
+logs/
+# секреты и окружение
+.env
+.env.*
+*.pem
+*.key
+.venv/
+venv/
+# служебное
+__pycache__/
+*.pyc
+.pytest_cache/
+.ipynb_checkpoints/
+.DS_Store
