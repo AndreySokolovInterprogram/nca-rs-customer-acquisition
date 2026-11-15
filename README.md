@@ -9,7 +9,13 @@ NCA-RS сопоставляет кластеры мультимодальног�
 > multimodal embeddings with Qwen3-VL-Embedding-2B (MAD-based video keyframe selection), adaptive convex
 > renormalization (ACR) of user profiles, clustering (Ward / average / complete / Bayesian GMM, largest cluster
 > ≤ 50 % rule), five matching methods with the TAS score, a permutation test, the M1 hidden-community ranking
-> evaluation against baselines B0–B3, the response model and a hybrid, and ablations. No data is included;
+> evaluation against baselines B0–B3, the response model and a hybrid, and ablations. Mapping to the paper:
+> §3.4 MAD video compression (`mm_media.py`); §3.5–3.6 encoder choice and company post vectorization
+> (`encoders.py`, `mm_embed.py`); §3.7 user profile vectorization, ACR (`nca.py`); §3.8 clustering;
+> §3.9 five cluster matching methods; §3.10 the TAS functional; §3.11 quality measures M1, M2 and the
+> permutation test; §3.12 baselines B0–B3; §3.13 protocol and ablations (`s4_protocol.py`); §4 results
+> (4.2 partition properties, 4.3 matching comparison, 4.4 measure M1; `s7_tables.py`, `mm_s6_checks.py`,
+> `mm_s7_checks_tables.py`). No data is included;
 > the data were collected through the official VK API. Licensed under MIT.
 
 ## Что в репозитории
@@ -20,15 +26,18 @@ NCA-RS сопоставляет кластеры мультимодальног�
 
 | Раздел статьи | Что | Файлы |
 |---|---|---|
-| — | эмбеддинги Qwen3-VL-Embedding-2B (текст, изображение, видео) | `encoders.py`, `mm_embed.py`, `mm_s4_pipeline.py`, `mm_s12_m1_embed.py` |
-| — | сжатие видео: ключевые кадры по MAD (2 кадра/с, θ = 10, K ≤ 32) | `mm_media.py` |
-| — | сборка выборки и эмбеддингов в формат этапов, полные профили | `mm_s5_finalize.py`, `data.py` |
-| 3.6 | профили аудитории по адаптивной выпуклой ренормализации (АВР) | `nca.acr_profiles`, `data.EncoderData.profiles` |
+| 3.4 | сжатие видео: ключевые кадры по MAD (2 кадра/с, θ = 10, K ≤ 32) | `mm_media.py` |
+| 3.5, 3.6 | выбор энкодера; векторизация постов компаний — Qwen3-VL-Embedding-2B (текст, изображение, видео) | `encoders.py`, `mm_embed.py` (кодирование и хранение эмбеддингов — `mm_s4_pipeline.py`, `mm_s12_m1_embed.py`) |
+| 3.7 | векторизация профилей пользователей: адаптивная выпуклая ренормализация (АВР) | `nca.acr_profiles`, `data.EncoderData.profiles` |
 | 3.8 | кластеризация: Ward, average, complete, Bayesian GMM; выбор k по угловому силуэту при условии «крупнейший кластер ≤ 50 %»; силуэт, CH, Хопкинс, стабильность Жаккара, gap | `nca.py`, `s4_protocol.select_k / pick_best / eval_corpus` (этап 3c) |
-| 3.9 | TAS и пять методов сопоставления (пороговый, жадный, оптимальный транспорт, бикластеризация, IPFP); перестановочный тест M2 | `nca.tas_matrix`, `nca.match`, `s4_protocol.stage_3d` |
-| 4 | M1: скрытое сообщество против 99 кандидатов; NCA-RS, модель отклика, гибрид, B0–B3; бутстреп-интервалы, тест ДеЛонга, поправка BH | `s4_protocol.stage_3e`, `nca.rank_metrics` |
-| 4 | абляции 3a–3e (энкодер, веса профиля, кластеризация, сопоставление), проверки 9а–9г (кривые по объёму, веса долей классов, зёрна 43–46, порог Q3), чувствительность по полным профилям | `s4_protocol.py`, `mm_s6_checks.py`, `mm_chain_m1_20261110.sh` |
-| 4 | сводные таблицы, анализ выбывания, диагностика M1 | `s7_tables.py`, `mm_s7_checks_tables.py`, `mm_s13_attrition.py`, `mm_s15_m1_diag.py` |
+| 3.9 | пять методов сопоставления кластеров (пороговый, жадный, оптимальный транспорт, бикластеризация, IPFP) | `nca.match` |
+| 3.10 | функционал TAS | `nca.tas_matrix`, `nca.cluster_max` |
+| 3.11 | меры качества M1, M2 и перестановочный тест; бутстреп-интервалы, тест ДеЛонга, поправка BH | `nca.rank_metrics`, `nca.bootstrap_ci`, `nca.paired_auc_test`, `s4_protocol.stage_3d` (перестановочный тест) |
+| 3.12 | базовые стратегии B0–B3 (а также модель отклика и гибрид) | `s4_protocol.m1_scores`, `s4_protocol.m1_context` |
+| 3.13 | протокол и абляции 3a–3e (энкодер, веса профиля, кластеризация, сопоставление, M1) | `s4_protocol.py`, `mm_chain_m1_20261110.sh` |
+| — | сборка выборки и эмбеддингов в формат этапов, полные профили | `mm_s5_finalize.py`, `data.py` |
+| 4 | результаты: 4.2 свойства разбиений, 4.3 сравнение методов сопоставления, 4.4 мера M1; проверки 9а–9г (кривые по объёму, веса долей классов, зёрна 43–46, порог Q3), чувствительность по полным профилям | `s7_tables.py`, `mm_s6_checks.py`, `mm_s7_checks_tables.py` |
+| 4 | дополнительно: анализ выбывания, диагностика M1 | `mm_s13_attrition.py`, `mm_s15_m1_diag.py` |
 
 `tests/test_synthetic.py` — проверка без данных и GPU: импорт всех модулей и методы на случайных векторах.
 

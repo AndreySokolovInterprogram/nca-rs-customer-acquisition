@@ -1,6 +1,6 @@
 """Методы NCA-RS для статьи №1: профили АВР, кластеризация, TAS, сопоставление, меры качества.
 
-Номера формул и мер — по sections/03-methods.tex статьи (MLwA).
+Разделы статьи: 3.7 профили АВР, 3.8 кластеризация, 3.9 сопоставление, 3.10 TAS, 3.11 меры качества M1, M2.
 Все векторы L2-нормированы; угловое расстояние d = arccos<x, y>.
 """
 
@@ -24,7 +24,7 @@ def l2n(x: np.ndarray) -> np.ndarray:
     return x / np.clip(n, 1e-12, None)
 
 
-# ---------------------------------------------------------------- профили (АВР, формула acr)
+# ---------------------------------------------------------------- профили (АВР, раздел 3.7, формула acr)
 def acr_profiles(e_posts, e_subs, e_demo, has_subs, q_demo, weights):
     """v_j по АВР: λ*_k = λ_k^0 q_k; нормировка по наблюдаемым компонентам; L2-нормировка.
 
@@ -203,7 +203,7 @@ def jaccard_stability(labels_orig: np.ndarray, boot_fn, n: int, B: int, rng) -> 
     return np.nanmean(J, axis=0), float(np.mean(aris))
 
 
-# ---------------------------------------------------------------- TAS (формула tas)
+# ---------------------------------------------------------------- TAS (раздел 3.10, формула tas)
 def cluster_max(G: np.ndarray, labels_u: np.ndarray, k_u: int) -> np.ndarray:
     """M[i, b] = max_{j ∈ T_b} G[i, j]."""
     order = np.argsort(labels_u, kind="stable")
@@ -223,7 +223,7 @@ def tas_matrix(G: np.ndarray, labels_c: np.ndarray, k_c: int, labels_u: np.ndarr
     return (oh.T @ M) / np.clip(oh.sum(0)[:, None], 1, None)
 
 
-# ---------------------------------------------------------------- сопоставление (формула match)
+# ---------------------------------------------------------------- сопоставление (раздел 3.9, формула match)
 MATCH_METHODS = ["threshold", "greedy", "ot", "bicluster", "ipfp"]
 
 
